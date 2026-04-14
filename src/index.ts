@@ -17,18 +17,19 @@ import path from "node:path";
 import { explainYoutubeAction } from "./actions/explain-youtube";
 import { clipYoutubeAction } from "./actions/clip-youtube";
 import { rateClipsAction } from "./actions/rate-clips";
+import { uploadYoutubeAction } from "./actions/upload-youtube";
 
 const elizaClipPlugin: Plugin = {
   name: "elizaclip",
   description:
     "ElizaClip YouTube skills: explain videos, generate viral clips, and rate them.",
-  actions: [explainYoutubeAction, clipYoutubeAction, rateClipsAction],
+  actions: [explainYoutubeAction, clipYoutubeAction, rateClipsAction, uploadYoutubeAction],
   providers: [],
   evaluators: [],
   init: async () => {
     console.log(
       "[elizaclip] plugin loaded with actions:",
-      [explainYoutubeAction, clipYoutubeAction, rateClipsAction]
+      [explainYoutubeAction, clipYoutubeAction, rateClipsAction, uploadYoutubeAction]
         .map((a) => a.name)
         .join(", ")
     );

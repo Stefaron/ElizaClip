@@ -201,7 +201,7 @@ export async function generateClips(videoPath: string, clips: ClipSuggestion[]):
       `-ss ${c.startTime}`,
       `-i "${videoPath}"`,
       `-t ${duration}`,
-      `-vf "scale='min(1080,iw)':'min(1920,ih)':force_original_aspect_ratio=decrease:flags=lanczos"`,
+      `-filter_complex "[0:v]split=2[bg][fg];[bg]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=luma_radius=30:luma_power=2:chroma_radius=15:chroma_power=1[bgb];[fg]scale=1080:1920:force_original_aspect_ratio=decrease:flags=lanczos[fgs];[bgb][fgs]overlay=(W-w)/2:(H-h)/2,setsar=1"`,
       "-c:v libx264 -preset fast -crf 23",
       "-c:a aac -b:a 128k",
       "-movflags +faststart -avoid_negative_ts make_zero",

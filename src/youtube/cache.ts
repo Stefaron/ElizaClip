@@ -1,6 +1,8 @@
 import type { IAgentRuntime } from "@elizaos/core";
-import type { ClipSuggestion } from "./youtube";
-import { extractYoutubeUrl } from "./youtube";
+import type { ClipSuggestion, GeneratedClip } from "./youtube";
+import { extractYoutubeUrl, TEMP_ROOT } from "./youtube";
+import fs from "node:fs";
+import path from "node:path";
 
 export interface RoomClipCache {
   url: string;
@@ -8,15 +10,55 @@ export interface RoomClipCache {
   videoDuration: number;
   transcriptText: string;
   clips: ClipSuggestion[];
+  generatedClips?: GeneratedClip[];
   updatedAt: number;
 }
+
+const CACHE_FILE = path.join(TEMP_ROOT, "cache.json");
 
 const store = new Map<string, RoomClipCache>();
 const urlStore = new Map<string, { url: string; updatedAt: number }>();
 
+function loadFromDisk() {
+  try {
+    if (!fs.existsSync(CACHE_FILE)) return;
+    const raw = JSON.parse(fs.readFileSync(CACHE_FILE, "utf-8"));
+    for (const [roomId, data] of Object.entries(raw.clips ?? {})) {
+      const cache = data as RoomClipCache;
+      if (cache.generatedClips) {
+        cache.generatedClips = cache.generatedClips.filter((c) =>
+          fs.existsSync(c.filePath)
+        );
+      }
+      store.set(roomId, cache);
+    }
+    for (const [roomId, data] of Object.entries(raw.urls ?? {})) {
+      urlStore.set(roomId, data as { url: string; updatedAt: number });
+    }
+  } catch (err) {
+    console.warn("[cache] failed to load:", (err as Error).message);
+  }
+}
+
+function saveToDisk() {
+  try {
+    fs.mkdirSync(TEMP_ROOT, { recursive: true });
+    const payload = {
+      clips: Object.fromEntries(store),
+      urls: Object.fromEntries(urlStore),
+    };
+    fs.writeFileSync(CACHE_FILE, JSON.stringify(payload));
+  } catch (err) {
+    console.warn("[cache] failed to save:", (err as Error).message);
+  }
+}
+
+loadFromDisk();
+
 export function setCache(roomId: string, data: RoomClipCache) {
   store.set(roomId, data);
   urlStore.set(roomId, { url: data.url, updatedAt: Date.now() });
+  saveToDisk();
 }
 
 export function getCache(roomId: string): RoomClipCache | undefined {
@@ -25,6 +67,7 @@ export function getCache(roomId: string): RoomClipCache | undefined {
 
 export function rememberUrl(roomId: string, url: string) {
   urlStore.set(roomId, { url, updatedAt: Date.now() });
+  saveToDisk();
 }
 
 export function getRememberedUrl(roomId: string): string | undefined {

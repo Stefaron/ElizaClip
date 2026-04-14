@@ -5,7 +5,9 @@
   "type": "module",
   "main": "src/index.ts",
   "module": "src/index.ts",
-  "keywords": ["project"],
+  "keywords": [
+    "project"
+  ],
   "packageType": "project",
   "agentConfig": {
     "pluginType": "project"
@@ -21,6 +23,7 @@
     "@elizaos/plugin-openai": "^1.0.0",
     "@elizaos/plugin-sql": "^1.0.0",
     "@elizaos/plugin-telegram": "^1.0.0",
+    "googleapis": "^171.4.0",
     "uuid": "^13.0.0"
   },
   "devDependencies": {

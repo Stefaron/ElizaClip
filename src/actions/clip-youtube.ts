@@ -27,6 +27,9 @@ const MAX_CLIP_DURATION = 60;
 const CLIP_KEYWORDS =
   /\b(clip|clips|potong|short|shorts|reel|reels|tiktok|viral)\b/i;
 
+const UPLOAD_KEYWORDS =
+  /\b(upload|post|publish|share)\b/i;
+
 export const clipYoutubeAction: Action = {
   name: "CLIP_YOUTUBE_VIDEO",
   similes: ["GENERATE_CLIPS", "MAKE_SHORTS", "VIRAL_CLIPS"],
@@ -35,9 +38,8 @@ export const clipYoutubeAction: Action = {
 
   validate: async (_runtime: IAgentRuntime, message: Memory) => {
     const text = message.content?.text ?? "";
+    if (UPLOAD_KEYWORDS.test(text)) return false;
     if (!CLIP_KEYWORDS.test(text)) return false;
-    // Accept if the current message has a URL, OR we have one cached for this room.
-    // Full recent-memory lookup happens in the handler.
     return !!extractYoutubeUrl(text) || !!getRememberedUrl(message.roomId);
   },
 
@@ -119,6 +121,7 @@ export const clipYoutubeAction: Action = {
         videoDuration: videoInfo.duration,
         transcriptText: truncated,
         clips: suggestions,
+        generatedClips: clips,
         updatedAt: Date.now(),
       });
 
@@ -155,7 +158,7 @@ export const clipYoutubeAction: Action = {
     } finally {
       // Keep clip files around until process exits (Telegram upload races with cleanup).
       // Clean only the raw source to save disk.
-      setTimeout(() => cleanupSession(sessionId).catch(() => {}), 5 * 60 * 1000);
+      setTimeout(() => cleanupSession(sessionId).catch(() => {}), 60 * 60 * 1000);
     }
   },
 
