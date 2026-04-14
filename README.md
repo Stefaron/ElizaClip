@@ -8,6 +8,15 @@ Built on [ElizaOS](https://elizaos.com), runs on [Nosana](https://nosana.com) de
 
 ---
 
+## Links
+
+- 🎬 **Demo video:** https://youtu.be/OmRrq-9a1Ng
+- 🐦 **X post:** https://x.com/satoshi_santosa/status/2043985138456109422?s=20
+- 🟣 **Live on Nosana:** https://fyhu2lnf4szv9gh4edr6kiwx6lareialbe622wbbpaef.node.k8s.prd.nos.ci/
+- 🤖 **Telegram bot:** [@ClipperElizaBot](https://t.me/ClipperElizaBot)
+
+---
+
 ## What It Does
 
 Paste a YouTube URL and ElizaClip will:
