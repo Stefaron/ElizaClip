@@ -18,6 +18,7 @@ import { explainYoutubeAction } from "./actions/explain-youtube";
 import { clipYoutubeAction } from "./actions/clip-youtube";
 import { rateClipsAction } from "./actions/rate-clips";
 import { uploadYoutubeAction } from "./actions/upload-youtube";
+import { webApiRoutes } from "./http/web-api";
 
 const elizaClipPlugin: Plugin = {
   name: "elizaclip",
@@ -26,6 +27,7 @@ const elizaClipPlugin: Plugin = {
   actions: [explainYoutubeAction, clipYoutubeAction, rateClipsAction, uploadYoutubeAction],
   providers: [],
   evaluators: [],
+  routes: webApiRoutes,
   init: async () => {
     console.log(
       "[elizaclip] plugin loaded with actions:",

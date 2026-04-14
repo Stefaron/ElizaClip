@@ -77,18 +77,21 @@ export const uploadYoutubeAction: Action = {
         clip.reason,
         "",
         clip.hashtags.map((h) => `#${h}`).join(" "),
-        "#Shorts",
+        "#Shorts #Short #YouTubeShorts",
       ]
         .filter(Boolean)
         .join("\n");
+
+      const baseTitle = clip.title.replace(/#shorts?/gi, "").trim();
+      const shortsTitle = `${baseTitle} #Shorts`.slice(0, 100);
 
       const res = await youtube.videos.insert({
         part: ["snippet", "status"],
         requestBody: {
           snippet: {
-            title: clip.title.slice(0, 100),
+            title: shortsTitle,
             description: description.slice(0, 5000),
-            tags: clip.hashtags.slice(0, 15),
+            tags: ["shorts", "short", ...clip.hashtags].slice(0, 15),
             categoryId: "22",
           },
           status: {

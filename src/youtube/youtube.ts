@@ -194,7 +194,7 @@ export async function generateClips(videoPath: string, clips: ClipSuggestion[]):
   const out: GeneratedClip[] = [];
   for (let i = 0; i < clips.length; i++) {
     const c = clips[i];
-    const duration = c.endTime - c.startTime;
+    const duration = Math.min(59, c.endTime - c.startTime);
     const outFile = path.join(outDir, `clip_${i + 1}.mp4`);
     const cmd = [
       "ffmpeg -y",

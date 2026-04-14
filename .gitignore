@@ -92,3 +92,5 @@ pnpm-lock.yaml
 bun.lockb
 /.eliza/.elizadb
 /dist
+
+nosana-job.json
